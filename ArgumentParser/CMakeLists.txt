@@ -1,12 +1,25 @@
-﻿# CMakeList.txt : CMake project for ArgumentParser, include source and define
-# project specific logic here.
-#
+﻿cmake_minimum_required(VERSION 3.16)
 
-# Add source to this project's executable.
-add_executable (ArgumentParser "ArgumentParser.cpp" "ArgumentParser.h")
-
-if (CMAKE_VERSION VERSION_GREATER 3.12)
-  set_property(TARGET ArgumentParser PROPERTY CXX_STANDARD 20)
+if (NOT DEFINED CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 20)
 endif()
 
-# TODO: Add tests and install targets if needed.
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+project(
+  ArgumentParser
+  VERSION 0.0.1
+  DESCRIPTION ""
+  LANGUAGES CXX)
+
+if (MSVC)
+    add_compile_options(/W4 /WX /w44265 /w44061)
+else()
+    add_compile_options(-Wall -Wextra -Wconversion -pedantic -Werror -Wshadow -Wunused)
+endif()
+
+add_library(ArgumentParser STATIC argument_parser.cpp)
+
+add_executable(main main.cpp)
+
+target_link_libraries(main ArgumentParser)
