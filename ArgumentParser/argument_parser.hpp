@@ -1,46 +1,52 @@
 #pragma once
 
-#include <span>
+#include <concepts>
+#include <fstream>
+#include <iostream>
+#include <map>
+#include <regex>
+#include <stdexcept>
 #include <string>
+#include <string_view>
+#include <unordered_map>
+#include <vector>
 
 namespace lrd {
-// class AttributeHolder {};
-
-// class ActionsContainer {};
-
 class ArgumentParser {
  public:
-  ArgumentParser() = default;
+  explicit ArgumentParser(std::string_view description = "");
 
-  ArgumentParser(std::span<const char* const> args, std::string_view usage = "",
-                 std::string_view description = "",
-                 std::string_view epilog = "",
-                 std::string_view prefixChars = "",
-                 std::string_view fromFilePrefixChars = "",
-                 std::string_view argumentDefault = "",
-                 std::string_view conflictHandler = "", bool addHelp = true,
-                 bool allowAbbrev = true, bool exitOnError = true,
-                 bool suggestOnError = false);
+  void add_argument(std::string_view name, std::string_view help = "",
+                    bool required = false, std::string_view default_value = "",
+                    std::string_view validation_regex = "",
+                    char short_flag = '\0');
 
-  ~ArgumentParser() = default;
+  void parse(int argc, char* argv[]);
 
-  friend std::ostream& operator<<(std::ostream& os,
-                                  const ArgumentParser& parser);
+  std::string get(std::string_view name) const;
+
+  void print_help(const std::string& output_file = "") const;
+
+  void handle_help_output(const std::string& output_file = "") const;
 
  private:
-  std::string m_programName = "PROGRAM_NAME";
-  std::string m_usage = "USAGE";
-  std::string m_description = "DESCRIPTION";
-  std::string m_epilog;
-  // m_parents = [];
-  // m_formatterClass = HelpFormatter;
-  std::string m_prefixChars = "-";
-  std::string m_fromFilePrefixChars;
-  std::string m_argumentDefault;
-  std::string m_conflictHandler = "error";
-  bool m_addHelp = true;
-  bool m_allowAbbrev = true;
-  bool m_exitOnError = true;
-  bool m_suggestOnError = false;
+  struct Argument {
+    std::string help;
+    bool required;
+    std::string default_value;
+    std::string value;
+    std::string validation_regex;
+    char short_flag;
+  };
+
+  std::string m_description;
+  std::unordered_map<std::string, Argument> m_arguments;
+  std::unordered_map<char, std::string> m_short_to_long;
+
+  void parse_long_flag(const std::vector<std::string_view>& args, size_t& i);
+
+  void parse_short_flags(const std::vector<std::string_view>& args, size_t& i);
+
+  void validate_dependencies();
 };
 }  // namespace lrd

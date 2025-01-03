@@ -18,7 +18,7 @@ else()
     add_compile_options(-Wall -Wextra -Wpedantic -Wconversion -Wshadow -Wunused -Werror)
 endif()
 
-add_library(ArgumentParser STATIC argument_parser.cpp)
+add_library(ArgumentParser STATIC "argument_parser.cpp")
 
 add_executable(main main.cpp)
 
