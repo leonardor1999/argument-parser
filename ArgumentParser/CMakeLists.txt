@@ -13,9 +13,9 @@ project(
   LANGUAGES CXX)
 
 if (MSVC)
-    add_compile_options(/W4 /WX /w44265 /w44061)
+    add_compile_options(/W4 /WX /permissive-)
 else()
-    add_compile_options(-Wall -Wextra -Wconversion -pedantic -Werror -Wshadow -Wunused)
+    add_compile_options(-Wall -Wextra -Wpedantic -Wconversion -Wshadow -Wunused -Werror)
 endif()
 
 add_library(ArgumentParser STATIC argument_parser.cpp)
