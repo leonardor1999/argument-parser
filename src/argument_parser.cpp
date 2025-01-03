@@ -1,4 +1,4 @@
-#include "argument_parser.hpp"
+#include "../includes/argument_parser.hpp"
 
 namespace lrd {
 ArgumentParser::ArgumentParser(std::string_view description)
@@ -8,22 +8,25 @@ void ArgumentParser::add_argument(std::string_view name, std::string_view help,
                                   bool required, std::string_view default_value,
                                   std::string_view validation_regex,
                                   char short_flag) {
-  std::string extended_help = std::string(help);
+  std::string extended_help{help};
+
   if (!validation_regex.empty() && validation_regex == "^(true|false)$") {
     extended_help += " (valid values: true, false)";
   }
+
   m_arguments[std::string(name)] = {extended_help,
                                     required,
                                     std::string(default_value),
                                     "",
                                     std::string(validation_regex),
                                     short_flag};
+
   if (short_flag != '\0') {
     m_short_to_long[short_flag] = std::string(name);
   }
 }
 
-void ArgumentParser::parse(int argc, char* argv[]) {
+void ArgumentParser::parse(const int argc, const char* const* const argv) {
   if (argc == 1) {
     print_help();
     throw std::runtime_error(

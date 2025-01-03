@@ -21,7 +21,7 @@ class ArgumentParser {
                     std::string_view validation_regex = "",
                     char short_flag = '\0');
 
-  void parse(int argc, char* argv[]);
+  void parse(const int argc, const char* const* const argv);
 
   std::string get(std::string_view name) const;
 

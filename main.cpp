@@ -1,8 +1,8 @@
 #include <iostream>
 
-#include "argument_parser.hpp"
+#include "includes/argument_parser.hpp"
 
-int main(int argc, char* argv[]) {
+int main(const int argc, const char* const* const argv) {
   lrd::ArgumentParser parser("Example Argument Parser");
 
   parser.add_argument("input", "Path to input file", true, "",
